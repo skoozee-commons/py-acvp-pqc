@@ -99,21 +99,29 @@ class ADRS:
 
 #   Section 11: Table 2. SLH-DSA parameter sets
 
-SLH_DSA_PARAM = {       #   ( hashname, n,  h,  d,  hp, a,  k, lg_w, m )
-    'SLH-DSA-SHA2-128s':    ( 'SHA2',   16, 63, 7,  9,  12, 14, 4,  30 ),
-    'SLH-DSA-SHAKE-128s':   ( 'SHAKE',  16, 63, 7,  9,  12, 14, 4,  30 ),
-    'SLH-DSA-SHA2-128f':    ( 'SHA2',   16, 66, 22, 3,  6,  33, 4,  34 ),
-    'SLH-DSA-SHAKE-128f':   ( 'SHAKE',  16, 66, 22, 3,  6,  33, 4,  34 ),
-    'SLH-DSA-SHA2-192s':    ( 'SHA2',   24, 63, 7,  9,  14, 17, 4,  39 ),
-    'SLH-DSA-SHAKE-192s':   ( 'SHAKE',  24, 63, 7,  9,  14, 17, 4,  39 ),
-    'SLH-DSA-SHA2-192f':    ( 'SHA2',   24, 66, 22, 3,  8,  33, 4,  42 ),
-    'SLH-DSA-SHAKE-192f':   ( 'SHAKE',  24, 66, 22, 3,  8,  33, 4,  42 ),
-    'SLH-DSA-SHA2-256s':    ( 'SHA2',   32, 64, 8,  8,  14, 22, 4,  47 ),
-    'SLH-DSA-SHAKE-256s':   ( 'SHAKE',  32, 64, 8,  8,  14, 22, 4,  47 ),
-    'SLH-DSA-SHA2-256f':    ( 'SHA2',   32, 68, 17, 4,  9,  35, 4,  49 ),
-    'SLH-DSA-SHAKE-256f':   ( 'SHAKE',  32, 68, 17, 4,  9,  35, 4,  49 ),
+SLH_DSA_PARAM = {       #   ( hashname, n,  h,  d,  hp, a,  k, lg_w, m, wots_zero_bits, fors_zero_bits )
+    'SLH-DSA-SHA2-128s':    ( 'SHA2',   16, 63, 7,  9,  12, 14, 4,  30, 0, 0 ),
+    'SLH-DSA-SHAKE-128s':   ( 'SHAKE',  16, 63, 7,  9,  12, 14, 4,  30, 0, 0 ),
+    'SLH-DSA-SHA2-128f':    ( 'SHA2',   16, 66, 22, 3,  6,  33, 4,  34, 0, 0 ),
+    'SLH-DSA-SHAKE-128f':   ( 'SHAKE',  16, 66, 22, 3,  6,  33, 4,  34, 0, 0 ),
+    'SLH-DSA-SHA2-192s':    ( 'SHA2',   24, 63, 7,  9,  14, 17, 4,  39, 0, 0 ),
+    'SLH-DSA-SHAKE-192s':   ( 'SHAKE',  24, 63, 7,  9,  14, 17, 4,  39, 0, 0 ),
+    'SLH-DSA-SHA2-192f':    ( 'SHA2',   24, 66, 22, 3,  8,  33, 4,  42, 0, 0 ),
+    'SLH-DSA-SHAKE-192f':   ( 'SHAKE',  24, 66, 22, 3,  8,  33, 4,  42, 0, 0 ),
+    'SLH-DSA-SHA2-256s':    ( 'SHA2',   32, 64, 8,  8,  14, 22, 4,  47, 0, 0 ),
+    'SLH-DSA-SHAKE-256s':   ( 'SHAKE',  32, 64, 8,  8,  14, 22, 4,  47, 0, 0 ),
+    'SLH-DSA-SHA2-256f':    ( 'SHA2',   32, 68, 17, 4,  9,  35, 4,  49, 0, 0 ),
+    'SLH-DSA-SHAKE-256f':   ( 'SHAKE',  32, 68, 17, 4,  9,  35, 4,  49, 0, 0 ),
 
-    'SLH-DSA-SHAKE-256sPlusC':   ( 'SHAKE',  32, 66, 11, 6, 14, 19, 6, 42 ) 
+    # SPHINCS+C Paramter sets according to SPHINCS+C Reference implementation
+    'SLH-DSA-SHAKE-128fPlusC':   ( 'SHAKE',  16, 63, 21, 3, 9, 19, 4, 31, 0, 8), 
+    'SLH-DSA-SHAKE-128sPlusC':   ( 'SHAKE',  16, 66, 11, 6, 13, 9, 7, 24, 2, 18),
+    'SLH-DSA-SHAKE-192fPlusC':   ( 'SHAKE',  24, 63, 21, 3, 9, 30, 4, 43, 0, 13), 
+    'SLH-DSA-SHAKE-192sPlusC':   ( 'SHAKE',  24, 66, 11, 6, 15, 13, 7, 34, 2, 12), 
+    'SLH-DSA-SHAKE-192fPlusC':   ( 'SHAKE',  32, 64, 16, 4, 10, 34, 4, 52, 0, 10), 
+    'SLH-DSA-SHAKE-256sPlusC':   ( 'SHAKE',  32, 66, 11, 6, 14, 19, 6, 42, 2, 19), 
+    
+
 }
 
 #   SLH-DSA Implementation
@@ -128,10 +136,10 @@ class SLH_DSA:
             if param not in SLH_DSA_PARAM:
                 raise ValueError
             (self.hashname, self.n, self.h, self.d, self.hp,
-                self.a, self.k, self.lg_w, self.m) = SLH_DSA_PARAM[param]
+                self.a, self.k, self.lg_w, self.m, self.wots_zero_bits, self.fors_zero_last_bits) = SLH_DSA_PARAM[param]
         else:
             (self.hashname, self.n, self.h, self.d, self.hp,
-                self.a, self.k, self.lg_w, self.m) = param
+                self.a, self.k, self.lg_w, self.m, self.wots_zero_bits, self.fors_zero_last_bits) = param
 
         #   instantiate hash functions
         if self.hashname == 'SHAKE':
@@ -161,20 +169,18 @@ class SLH_DSA:
 
         #   equations 5.1 - 5.4
         self.w      = 2**self.lg_w
-        self.len1   = 42 #(8 * self.n + (self.lg_w - 1)) // self.lg_w  # TODO: wieder Formel rein, auf 42 für Vergleichbarkeit mit ref impl in WOTS+C ref impl: SPX_WOTS_LEN1 (8 * SPX_N / SPX_WOTS_LOGW)
+        self.len1   = 42 #(8 * self.n + (self.lg_w - 1)) // self.lg_w # CHANGE WHEN USING OTHER PARAMETER SET(8 * self.n + (self.lg_w - 1)) // self.lg_w  # TODO: wieder Formel rein, auf 42 für Vergleichbarkeit (Parameterset SLH-DSA-SHAKE-256sPlusC) mit ref impl in WOTS+C ref impl: SPX_WOTS_LEN1 (8 * SPX_N / SPX_WOTS_LOGW)
         self.len2   = ((self.len1 *
                         (self.w - 1)).bit_length() - 1) // self.lg_w + 1 # nicht mehr gebraucht, weil das die Länge der Prüfsumme ist
         self.len    = self.len1 # + self.len2
 
 
-        # for FORS+C TODO: in Parametersets auslagern
-        self.FORS_ZERO_LAST_BITS = 19
+        # for FORS+
+        self.FORS_ZERO_LAST_BYTES = ((self.fors_zero_last_bits + 7) // 8)
 
-        self.FORS_ZERO_LAST_BYTES = ((self.FORS_ZERO_LAST_BITS + 7) // 8)
+        self.MAX_HASH_TRIALS_FORS = (1 << (self.fors_zero_last_bits + 10))
 
-        self.MAX_HASH_TRIALS_FORS = (1 << (self.FORS_ZERO_LAST_BITS + 10))
-
-        if self.k <= self.FORS_ZERO_LAST_BITS:
+        if self.k <= self.fors_zero_last_bits:
             self.NUMBER_OF_FORS_TREES_TO_SIGN = self.k - 1
         else:
             self.NUMBER_OF_FORS_TREES_TO_SIGN = self.k
@@ -190,8 +196,8 @@ class SLH_DSA:
 
         # for WOTS+C TODO: in Parametersets auslagern
         self.MAX_HASH_TRIALS_WOTS = (1 << (20)) 
-        self.WANTED_CHECKSUM = ((self.len * (self.w - 1)) / 2) 
-        self.WOTS_ZERO_BITS = 2
+        self.WANTED_CHECKSUM = ((self.len * (self.w - 1)) // 2) #TODO: lieber auf oder abrunden?
+        self.wots_zero_bits = 2
         self.WOTS_COUNTER_BYTES = 4
 
 
@@ -364,7 +370,7 @@ class SLH_DSA:
         """ Algorithm 7: wots_sign(M, SK.seed, PK.seed, ADRS).
             Generate a WOTS+ signature on an n-byte message."""
         msg     =   self.base_2b(m, self.lg_w, self.len1)
-        # Hier countersetzen und csum checken oder in xmss ? In Referenz counterschleife in XMSS
+        # Hier countersetzen und csum checken oder in xmss ? In Referenz:  counterschleife in XMSS
         sk_adrs = adrs.copy()
         sk_adrs.set_type_and_clear(ADRS.WOTS_PRF)
         sk_adrs.set_key_pair_address(adrs.get_key_pair_address())
@@ -402,7 +408,7 @@ class SLH_DSA:
         # Was ist wenn mehr als in Byte zero gesetzt werden sollen? Was bringt das überhaupt wenn nur 2 bits 0 gesetzt werden
         last_byte_int = d[-1]
         
-        mask = 0xFF & (0xFF << (8 - self.WOTS_ZERO_BITS))
+        mask = 0xFF & (0xFF << (8 - self.wots_zero_bits))
 
         if csum != self.WANTED_CHECKSUM or (last_byte_int & mask) != 0:
             return False
@@ -468,11 +474,12 @@ class SLH_DSA:
         while not found:
             counter += 1
             if counter > self.MAX_HASH_TRIALS_WOTS:
+                print("WOTS+C Counter search failed after", counter, "trials.")
                 return None # TODO was soll passieren? 
             
             counter_search_adrs.set_counter(counter)
-            d = self.h_f(pk_seed, counter_search_adrs, m) # Ist das die richtige Funktion?
-            if counter < 2:
+            d = self.shake256(pk_seed + counter_search_adrs.adrs() + m, self.len) # Ist das die richtige Funktion/Länge?
+            """if counter < 2:
                 print(f"PubSeed : {pk_seed.hex()}")
                 print(f"In (Msg): {m.hex()}")
                 print(f"ADRS    : {counter_search_adrs.adrs().hex()}")
@@ -480,7 +487,7 @@ class SLH_DSA:
                 msg = self.base_2b(d, self.lg_w, self.len1)
                 csum = self.calculate_checksum_with_debug_print(msg)
                 print("Counter:", counter, " Csum:", csum)
-                print("\n------------------\n  ")
+                print("\n------------------\n  ")"""
                 
             if self.check_wotsc_conditions(d): 
                 print("counter found:", counter)
@@ -512,7 +519,7 @@ class SLH_DSA:
         counter_search_adrs.set_type_and_clear(ADRS.COMPRESS_WOTS)
         counter_search_adrs.set_key_pair_address(idx)
         counter_search_adrs.set_counter(counter)
-        d = self.h_f(pk_seed, counter_search_adrs, m)
+        d = self.shake256(pk_seed + counter_search_adrs.adrs() + m, self.len)
 
 
         node_0  = self.wots_pk_from_sig(sig, d, pk_seed, adrs)
@@ -631,8 +638,8 @@ class SLH_DSA:
 
         indices = self.base_2b(md, self.a, self.k)
 
-        # In ref impl werden iwie die ersten bytes weggelassen und die letzten auch, hä, warum?
-        # indices = self.message_to_indices(md[3:-5], self.k, self.a)
+        # : In c ref impl werden iwie die ersten bytes weggelassen und die letzten auch, hä, warum?
+        # Uncomment to match C implementation: indices = self.message_to_indices(md[3:-5], self.k, self.a)
         print("Message digest:", md.hex())
         print("FORS indices:",indices)
 
@@ -712,7 +719,8 @@ class SLH_DSA:
     def check_forsc_conditions(self, md):
         """ Check FORS+C specific conditions for FORS message digest."""
         last_tree_digest_int = self.to_int(md[len(md) - self.FORS_ZERO_LAST_BYTES:], self.FORS_ZERO_LAST_BYTES)
-        mask = (1 << self.FORS_ZERO_LAST_BITS) - 1
+        # Uncomment to match C Impl: last_tree_digest_int = self.to_int(md[:self.FORS_ZERO_LAST_BYTES], len(md[:self.FORS_ZERO_LAST_BYTES]))
+        mask = (1 << self.fors_zero_last_bits) - 1
         if (last_tree_digest_int & mask) == 0:
             return True
         return False
@@ -925,4 +933,3 @@ class SLH_DSA:
 if __name__ == '__main__':
     slh_dsa = SLH_DSA()
     test_slhdsa(slh_dsa, '(fips205.py)')
-

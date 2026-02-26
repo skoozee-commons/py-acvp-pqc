@@ -25,7 +25,7 @@ if __name__ == "__main__":
     
     #slh = SLH_DSA(param='SLH-DSA-SHAKE-256s')
     slh = SLH_DSA(param='SLH-DSA-SHAKE-256sPlusC')
-
+    
     print("n:", slh.n)
     print("h:", slh.h)
     print("d:", slh.d)
@@ -42,12 +42,12 @@ if __name__ == "__main__":
 
     print("m:", slh.m)
     
-    """ print("Max hash trials wots:", slh.MAX_HASH_TRIALS_WOTS)
+    print("Max hash trials wots:", slh.MAX_HASH_TRIALS_WOTS)
     print("wanted checksum:", slh.WANTED_CHECKSUM)
-    print("wots zero bits:", slh.WOTS_ZERO_BITS)
+    print("wots zero bits:", slh.wots_zero_bits)
     print("wots counter bytes:", slh.WOTS_COUNTER_BYTES)
-    print("fors zero last bits:", slh.FORS_ZERO_LAST_BITS)
-    print("max hash trials fors:", slh.MAX_HASH_TRIALS_FORS)"""
+    print("fors zero last bits:", slh.fors_zero_last_bits)
+    print("max hash trials fors:", slh.MAX_HASH_TRIALS_FORS)
 
     skSeed = bytes([0x00] * slh.n)
     skPrf  = bytes([0x00] * slh.n)
@@ -72,3 +72,4 @@ if __name__ == "__main__":
 
     print("Valid:", is_valid)
     print("length signature:", len(signature))
+    print("Signature:", signature.hex())
